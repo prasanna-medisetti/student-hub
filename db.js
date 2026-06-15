@@ -1,11 +1,11 @@
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
-    host: "YOUR_HOST",
-    user: "YOUR_USER",
-    password: "YOUR_PASSWORD",
-    database: "YOUR_DATABASE",
-    port: YOUR_PORT
+    host: "shuttle.proxy.rlwy.net",
+    user: "root",
+    password: "your_password_here",
+    database: "railway",
+    port: 12345
 });
 
 db.connect((err) => {
