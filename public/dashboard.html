@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-content">
+
+        <h1 id="welcome"></h1>
+
+        <p id="studentInfo"></p>
+
+        <h3>Your Courses</h3>
+        <ul id="courseList"></ul>
+
+        <input id="newCourse" placeholder="Add new course" class="input-box">
+        <button onclick="addCourse()">Add Course</button>
+
+        <br><br>
+
+        <button onclick="logout()">Logout</button>
+
+    </div>
+</div>
+
+<script>
+
+const user = JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+    window.location.href = "/login.html";
+}
+
+// show user info
+document.getElementById("welcome").innerText =
+"Welcome " + user.full_name + " 👋";
+
+document.getElementById("studentInfo").innerText =
+user.email + " | " + user.phone;
+
+
+// load courses
+async function loadCourses(){
+
+    const res = await fetch("/getCourses?email=" + user.email);
+    const data = await res.json();
+
+    const list = document.getElementById("courseList");
+    list.innerHTML = "";
+
+    data.forEach(c => {
+        const li = document.createElement("li");
+        li.innerText = c.course_name;
+        list.appendChild(li);
+    });
+}
+
+loadCourses();
+
+
+// add course
+async function addCourse(){
+
+    const course = document.getElementById("newCourse").value;
+
+    await fetch("/addCourse", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            email: user.email,
+            course
+        })
+    });
+
+    document.getElementById("newCourse").value = "";
+    loadCourses();
+}
+
+
+// logout
+function logout(){
+    localStorage.clear();
+    window.location.href="/login.html";
+}
+
+</script>
+
+</body>
+</html>
